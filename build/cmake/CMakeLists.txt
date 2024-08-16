@@ -24,6 +24,7 @@ option (GLEW_OSMESA "OSMesa mode" OFF)
 if (APPLE)
     option (BUILD_FRAMEWORK "Build Framework bundle for OSX" OFF)
 endif ()
+option (GLEW_INSTALL "Install glew" ON)
 
 set (GLEW_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
@@ -167,6 +168,7 @@ if(NOT DEFINED BUILD_SHARED_LIBS OR NOT BUILD_SHARED_LIBS)
   list(APPEND targets_to_install glew_s)
 endif()
 
+if(GLEW_INSTALL)
 install ( TARGETS ${targets_to_install}
           ${MAYBE_EXPORT}
           RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -174,6 +176,7 @@ install ( TARGETS ${targets_to_install}
           ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
           FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
 )
+endif(GLEW_INSTALL)
 
 if (BUILD_UTILS)
   set (GLEWINFO_SRC_FILES ${GLEW_DIR}/src/glewinfo.c)
@@ -204,9 +207,15 @@ if (BUILD_UTILS)
     target_link_libraries(visualinfo ${X11_LIBRARIES})
   endif ()
 
+  if(GLEW_INSTALL)
   install ( TARGETS glewinfo visualinfo
             DESTINATION ${CMAKE_INSTALL_BINDIR})
+  endif(GLEW_INSTALL)
 endif ()
+
+if(NOT GLEW_INSTALL)
+  return()
+endif()
 
 set (prefix ${CMAKE_INSTALL_PREFIX})
 set (exec_prefix ${CMAKE_INSTALL_PREFIX})
